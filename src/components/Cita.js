@@ -1,26 +1,25 @@
-import React from 'react'
-import PropTypes from 'prop-types';
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types'
+
 const Cita = ({cita, eliminarCita}) => {
+    const {mascota, propietario, fecha, hora, sintomas} = cita
     return (
-        <div className="media mt-3">
-            <div className="media-body">
-                <h3 className="mt-0"> {cita.mascota}</h3>
-                <p className="card-text"> <span>Nombre Dueño:</span>{cita.propietario}</p>
-                <p className="card-text"> <span>Fecha:</span>{cita.fecha}</p>
-                <p className="card-text"> <span>Hora:</span>{cita.hora}</p>
-                <p className="card-text"> <span>Sintomas:</span></p>
-                <p className="card-text">{cita.sintomas}</p>
-                <button className="btn btn-danger"
-                onClick={()=> eliminarCita(cita.id)}>
-                    Borrar Cita
-                </button>
-            </div>
+      <Fragment>
+        <div className="cita">
+          <p>
+            Mascota: <span>{mascota} </span>
+          </p>
+          <p>Dueño: <span>{propietario}</span></p>
+          <p>Fecha: <span>{fecha}</span></p>
+          <p>Hora: <span>{hora}</span></p>
+          <p>Sintomas: <span>{sintomas}</span></p>
+          <button className=" button eliminar u-full-width" onClick={ () => eliminarCita(cita.id)}>Eliminar Cita </button>
         </div>
-    
-      );
+      </Fragment>
+    );
 }
- Cita.propType = {
-     cita: PropTypes.object.isRequired,
-     eliminarCita: PropTypes.func.isRequired
+ Cita.prpoTypes = {
+   cita: PropTypes.object.isRequired,
+   eliminarCita: PropTypes.func.isRequired
  }
 export default Cita;

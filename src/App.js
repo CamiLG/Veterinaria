@@ -1,60 +1,50 @@
-import React, { Component } from 'react';
-import './bootstrap.min.css';
-import Header from './components/Header';
-import ListaCitas from './components/ListaCitas';
-import NuevaCita from './components/NuevaCita';
+import React, { Fragment, useState, useEffect } from "react";
+import Form from "./Components/Form";
+import Cita from "./Components/Cita";
 
-class App extends Component {
-  state = {  
-    citas:[]
-  }
-  componentDidMount(){
-    const citasLS= localStorage.getItem('citas');
-    if(citasLS){
-      this.setState({
-        citas: JSON.parse(citasLS)
-      });
-    }
-  }
-  componentDidUpdate(){
-      localStorage.setItem('citas', JSON.stringify(this.state.citas));
-  }
-
-  crearNuevaCita= datos=> {
-    const citas = [...this.state.citas, datos];
-
-    this.setState(
-      {citas}
-    )
-  }
-  eliminarCita= id=> {
-    //eliminar cita hacer una copia del state y 
-    const citasActuales=[...this.state.citas];
-    const citas= citasActuales.filter(cita=> cita.id !== id);
-    this.setState({citas})
-
-  }
-  render() { 
+function App() {
+  let citasIniciales = JSON.parse(localStorage.getItem('citas'));
+  //revisamos si hay citas almacenadas en localstorage, si citas es null, enviamos un arreglo vacío.
+  if(!citasIniciales)
+{
+  citasIniciales = [];
+}  const [citas, setcitas] = useState([]);
+  /* useEffect es un método que se ejecuta cuando se carga o modifica un componente siempre retorna un arreglo. Es similar al método component did mount y component did update */
+  useEffect(() => {
     
-    return ( 
-      <div className= "container">
-        <Header titulo='Administrador Pacientes Veterinaria'/>
+    if(citasIniciales){
+      localStorage.setItem('citas', JSON.stringify(citas));
+    }else {
+      localStorage.setItem('citas', JSON.stringify([]));
+    }
+  }, [citas, citasIniciales]);
+  const crearCita = cita => {
+    setcitas([...citas, cita]);
+  };
+  const eliminarCita = id => {
+    const nuevasCitas = citas.filter(cita => cita.id !== id);
+    setcitas(nuevasCitas);
+  };
+  const titulo = citas.length === 0 ? "No hay citas" : "Administra tus citas";
+
+  return (
+    <Fragment>
+      <h1>Administrador de pacientes</h1>
+      <div className="container">
         <div className="row">
-          <div className="col-md-10 mx-auto">
-            <NuevaCita
-            crearNuevaCita={this.crearNuevaCita}
-            />
+          <div className="one-half column">
+            <Form crearCita={crearCita} />
           </div>
-          <div className="mt-5 col-md-10 mx-auto">
-                <ListaCitas
-                citas={this.state.citas}
-                eliminarCita={this.eliminarCita}
-                />
-          </div>    
+          <div className="one-half column">
+            <h2>{titulo}</h2>
+            {citas.map(cita => (
+              <Cita cita={cita} key={cita.id} eliminarCita={eliminarCita} />
+            ))}
+          </div>
         </div>
       </div>
-     );
-  }
+    </Fragment>
+  );
 }
- 
+
 export default App;
